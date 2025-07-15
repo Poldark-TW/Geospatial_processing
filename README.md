@@ -195,7 +195,7 @@ model.fit(
 ### Assessment For The Model
 Evaluate the performance and reliability of trained land cover classification model. It simulates how the model would perform on new, real-world imagery that it has not encountered before. It allows for an unbiased assessment of the model's generalization capabilities.
 
-#### Making Predictions on the Test Set
+#### 1. Making Predictions on the Test Set
 ```test_apply = model.predict(test[predictors])```: This is the prediction step. Here, the trained ```model``` (```RandomForestClassifier```) is used to predict the land cover class for each sample in the ```test``` dataset.
 ```python
 # Test model
@@ -219,29 +219,46 @@ report = classification_report(test['value'], test_apply)
 print(report)
 ```
 
+### Predicting Land Cover Classification
+The trained machine learning model is applied to an entire image to generate the final land cover map, which is then visualized.
 
+#### 1. Predicting Land Cover for the Entire Image
+```prediction = model.predict(table_image[predictors])```: This is where trained ```model``` (the ```RandomForestClassifier```) is put to work on the actual, full image data (represented by ```table_image```).
+  * ```table_image[predictors]```: This provides the features for each pixel in the entire image. This data would have been prepared in a previous (unshown in this snippet) step, likely by extracting values from the full Landsat and PALSAR images and flattening them into a 2D array suitable for ```model.predict()```.
+  * ```prediction```: This variable will store the model's output: a 1D array where each value is the predicted land cover class ID for the corresponding pixel in the input ```table_image```.
+```python
+# Predict table image
+prediction = model.predict(table_image[predictors])
+prediction
+```
 
+#### 2. Reshaping the Prediction into an Image Format
+This step is for **visualization and subsequent geospatial analysis**. The raw 1D array of predictions is not an image; this transformation converts it back into a recognizable image structure that can be plotted and saved as a georeferenced file.
+  * ```prediction.reshape(transpose_shape[0], transpose_shape[1])```: The prediction array, being a 1D array of class IDs, needs to be reshaped back into a 2D (height x width) image format. ```transpose_shape``` (presumably derived from the original image dimensions) provides the correct dimensions.
+  * ```np.flip(...)``` and ```np.rot90(...)```: These operations apply necessary flips and rotations to correctly orient the reshaped ```prediction``` array, ensuring that the resulting ```prediction_image``` aligns geographically with the original satellite imagery and is not rotated or flipped incorrectly.
+```python
+# Prediction to image again
+prediction_image = np.rot90(np.flip(prediction.reshape(transpose_shape[0], transpose_shape[1]), 1), 1)
+```
 
+#### 3. Displaying the Predicted Land Cover Map
+This final plotting step is about visual inspection and interpretation of the classification results.
+  * ```cmap=cmap```: Applies the **custom colormap** (defined in an earlier section) to the image. This is vital as it colors each land cover class with its predefined, consistent color, making the map immediately interpretable (all water appears blue, all forest appears green).
+  * ```interpolation="nearest"```: Specifies the interpolation method for display. "Nearest" is often preferred for discrete classification maps to avoid blurring class boundaries.
+```python
+# Show to plot
+plt.figure(figsize=(10, 10))
+plt.imshow(prediction_image, cmap=cmap, interpolation="nearest")
+plt.legend(**legend)
+```
 
+### Conclusion
+This project successfully demonstrates a workflow for automated land cover classification by effectively integrating **remote sensing data (Landsat and PALSAR)** with **machine learning techniques (Random Forest Classifier)**.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+How to improve the project: 
+  * In traditional random cross-validation (like the ```train_test_split``` used in the current code), data points are randomly assigned to folds, meaning that training and testing samples can be very close to each other geographically. This can lead to an **overestimation of model accuracy**. Therefore, Implementing **Spatial Cross-Validation** is a significant improvement for this land cover classification project, as it directly addresses a critical challenge in geospatial machine learning: **spatial autocorrelation**.
+  * **Hyperparameter Tuning**: Optimize the ```RandomForestClassifier```'s hyperparameters (```n_estimators```, ```max_depth```, ```min_samples_leaf```). Techniques like Grid Search or Randomized Search can systematically explore different parameter combinations to find the optimal set for dataset.
+  * Explore Other Machine Learning Models: While Random Forest is a strong baseline, consider experimenting with other powerful classifiers: **Support Vector Machines (SVMs)**: Effective for high-dimensional data and can handle complex decision boundaries.
 
 
 
