@@ -2,8 +2,8 @@
 
 This project provides a comprehensive, end-to-end solution for land cover classification. It begins with the loading and preparation of remote sensing data (images from Landsat and PALSAR satellites), proceeds with accurate classification using a machine learning model, and culminates in the generation of a high-quality land cover map with geospatial referencing and embedded colormap. The classification results are output in a georeferenced image format (GeoTIFF) and integrate a predefined color coding scheme, aiming to provide accurate, timely, and easily visualized land cover information.
 
-### Libraries
-These libraries have been carefully selected to ensure the project can efficiently handle geospatial data, perform machine learning tasks, conduct numerical computations, and visualize results.
+### Library
+The library ```Scikit-learn``` provides a wide range of supervised and unsupervised learning algorithms, along with tools for **model fitting, data preprocessing, model selection, and evaluation**. It's built on NumPy, SciPy, and Matplotlib, making it highly efficient for numerical and scientific computing.
 ```python
 import geopandas as gpd
 from sklearn.ensemble import RandomForestClassifier
