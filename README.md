@@ -1,4 +1,4 @@
-# Land Cover Classification Modelling By Machine Learning Algorithms
+# Scikit-learn: Land Cover Classification Modelling By Machine Learning Algorithms
 
 This project provides a comprehensive, end-to-end solution for land cover classification. It begins with the loading and preparation of remote sensing data (images from Landsat and PALSAR satellites), proceeds with accurate classification using a machine learning model, and culminates in the generation of a high-quality land cover map with geospatial referencing and embedded colormap. The classification results are output in a georeferenced image format (GeoTIFF) and integrate a predefined color coding scheme, aiming to provide accurate, timely, and easily visualized land cover information.
 
